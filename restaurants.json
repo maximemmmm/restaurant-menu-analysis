@@ -1,0 +1,19 @@
+{
+  "note": "Template: list of competitor restaurants to monitor. Copy to ~/.openclaw/workspace/data/competitors/restaurants.json",
+  "restaurants": [
+    {
+      "name": "Example Italian Restaurant",
+      "slug": "example-italian",
+      "address": "123 Main St, City, FL",
+      "cuisine": ["italian"],
+      "website": "https://example-restaurant.com/",
+      "menus": [
+        {"id": "dinner",     "label": "Dinner Menu", "url": "https://example-restaurant.com/dinner"},
+        {"id": "lunch",      "label": "Lunch Menu",  "url": "https://example-restaurant.com/lunch"},
+        {"id": "happy-hour", "label": "Happy Hour",  "url": "https://example-restaurant.com/happy-hour"}
+      ],
+      "yelp": "https://www.yelp.com/biz/example-restaurant",
+      "notes": "Main competitor"
+    }
+  ]
+}
