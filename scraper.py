@@ -174,6 +174,26 @@ def parse_html_menu(html: str) -> dict[str, list[dict]]:
                     sections[current_section] = []
                 break
 
+        # ── Detect ALL-CAPS section headings in <p>/<div>/<span> ──
+        # Many restaurant sites use styled divs, not heading tags, for section names
+        if tag_name in {"p", "div", "span", "li", "strong", "b"}:
+            raw = el.get_text(" ", strip=True)
+            # Must be short, no digits (not a price line), ALL CAPS or in SECTION_MAP
+            if raw and len(raw) < 60 and not re.search(r"\d", raw):
+                candidate = normalise_section(raw)
+                if candidate in SECTION_MAP.values():
+                    current_section = candidate
+                    if current_section not in sections:
+                        sections[current_section] = []
+                    continue
+                # Also catch ALL CAPS text that looks like a category (e.g. "APPETIZERS", "PASTA")
+                if raw == raw.upper() and len(raw.split()) <= 4 and len(raw) > 3:
+                    candidate = normalise_section(raw)
+                    current_section = candidate
+                    if current_section not in sections:
+                        sections[current_section] = []
+                    continue
+
         # ── Detect menu item ──
         # Item: element that contains a price
         text = el.get_text(" ", strip=True)
@@ -594,21 +614,24 @@ def scrape_menu(
                     pass
 
     else:
-        # HTML pipeline — cascade
-        html = _fetch_static(url)
-        if html:
-            method = "requests"
-        else:
-            html = _fetch_browser_service(url)
-            if html:
-                method = "browser_service"
-            else:
-                html = _fetch_playwright(url)
-                if html:
-                    method = "playwright_stealth"
-
-        if html:
+        # HTML pipeline — cascade through fetchers until we parse ≥1 menu item.
+        # Escalation triggers on BOTH fetch failure (None) AND 0 items parsed
+        # (covers JS-rendered sites that return skeleton HTML via requests).
+        _FETCHERS = [
+            ("requests", _fetch_static),
+            ("browser_service", _fetch_browser_service),
+            ("playwright_stealth", _fetch_playwright),
+        ]
+        for fetch_method, fetcher in _FETCHERS:
+            html = fetcher(url)
+            if not html:
+                print(f"[scraper] {fetch_method}: fetch returned nothing for {url}")
+                continue
             sections = parse_html_menu(html)
+            if sections:
+                method = fetch_method
+                break
+            print(f"[scraper] {fetch_method}: 0 items parsed at {url}, escalating…")
 
     checksum = snapshot_checksum(sections)
 
