@@ -1,19 +1,162 @@
 {
-  "note": "Template: list of competitor restaurants to monitor. Copy to ~/.openclaw/workspace/data/competitors/restaurants.json",
+  "updated": "2026-02-23",
+  "note": "Список конкурентов Sole Mio Kitchen (Boynton Beach, FL). Обновляется автоматически раз в месяц.",
+  "sole_mio": {
+    "name": "Sole Mio Kitchen",
+    "address": "Boynton Beach, FL",
+    "website": "https://solemiokitchen.com"
+  },
   "restaurants": [
     {
-      "name": "Example Italian Restaurant",
-      "slug": "example-italian",
-      "address": "123 Main St, City, FL",
+      "name": "Olive Garden Italian Restaurant",
+      "slug": "olive-garden",
+      "address": "1001 N Congress Ave, Boynton Beach, FL 33426",
       "cuisine": ["italian"],
-      "website": "https://example-restaurant.com/",
+      "website": "https://www.olivegarden.com/",
       "menus": [
-        {"id": "dinner",     "label": "Dinner Menu", "url": "https://example-restaurant.com/dinner"},
-        {"id": "lunch",      "label": "Lunch Menu",  "url": "https://example-restaurant.com/lunch"},
-        {"id": "happy-hour", "label": "Happy Hour",  "url": "https://example-restaurant.com/happy-hour"}
+        {"id": "main", "label": "Dine-In Menu (PDF)", "url": "https://m.olivegarden.com/dine-in-pdf"}
       ],
-      "yelp": "https://www.yelp.com/biz/example-restaurant",
-      "notes": "Main competitor"
+      "yelp": "https://www.yelp.com/biz/olive-garden-italian-restaurant-boynton-beach-3",
+      "notes": "Сетевой ресторан, длительные часы работы. HTML меню заблокировано Cloudflare, используем официальный PDF."
+    },
+    {
+      "name": "Porto Bella Italian Restaurant",
+      "slug": "porto-bella",
+      "address": "9770 S Military Trail, Boynton Beach, FL 33436",
+      "cuisine": ["italian"],
+      "website": "https://portobellaitalian.com/",
+      "menus": [
+        {"id": "main", "label": "Menu", "url": "https://portobellaitalian.com/menu/"}
+      ],
+      "yelp": "https://www.yelp.com/biz/porto-bella-italian-restaurant-and-pizzeria-boynton-beach",
+      "notes": "Популярное место. Статический HTML сайт, меню по категориям: пицца, пасты, курица, телятина, морепродукты."
+    },
+    {
+      "name": "Catering CC",
+      "slug": "catering-cc",
+      "address": "1599 SW 30th Ave, Boynton Beach, FL 33426",
+      "cuisine": ["catering"],
+      "website": "https://www.cateringcc.com/",
+      "menus": [
+        {"id": "main", "label": "Menu", "url": "https://www.cateringcc.com/menu"}
+      ],
+      "yelp": "https://www.yelp.com/biz/catering-cc-boynton-beach",
+      "notes": "Кейтеринг с хорошими отзывами, шеф-повар Уинстон"
+    },
+    {
+      "name": "Avellino's Italian Restaurant",
+      "slug": "avellinosd",
+      "address": "5869 W Atlantic Ave, Delray Beach, FL 33484",
+      "cuisine": ["italian"],
+      "website": "https://www.avellinosdelray.com/",
+      "menus": [
+        {"id": "main", "label": "Full Menu", "url": "https://slicelife.com/restaurants/fl/delray-beach/33484/avellino-s-italian-restaurant-delray-beach/menu"}
+      ],
+      "yelp": null,
+      "notes": "JS-рендеред сайт (Playwright падает). Меню доступно через Slicelife как статический HTML."
+    },
+    {
+      "name": "Le Sorelle Restaurant",
+      "slug": "le-sorelle",
+      "address": "Delray Beach, FL",
+      "cuisine": ["italian"],
+      "website": "https://www.lesorellerestaurant.com/",
+      "menus": [
+        {"id": "main", "label": "Full Menu (Delray Beach)", "url": "https://www.lesorellerestaurant.com/menu-delray-beach"}
+      ],
+      "yelp": null,
+      "notes": "Активный конкурент: Happy Hour, винные дегустации, сезонные бранчи с живой музыкой"
+    },
+    {
+      "name": "Mamma Mia's Trattoria",
+      "slug": "mamma-mias-trattoria",
+      "address": "West Boynton Beach, FL",
+      "cuisine": ["italian"],
+      "website": "https://www.mammamiastrattoria.com/",
+      "menus": [
+        {"id": "dinner", "label": "Dinner Menu (PDF)", "url": "https://www.mammamiastrattoria.com/static/sitefiles/WEST_BOYNTON_DINE_IN_DINNER_2023.pdf"},
+        {"id": "lunch",  "label": "Lunch Menu (PDF)",  "url": "https://www.mammamiastrattoria.com/static/sitefiles/Lunch-Menu-West-Boynton-622.pdf"}
+      ],
+      "yelp": null,
+      "notes": "Итальянская траттория в West Boynton. Меню в PDF формате."
+    },
+    {
+      "name": "Mamma Mia Italian Restaurant",
+      "slug": "mamma-mia-italian",
+      "address": "3841 W Woolbright Rd, Boynton Beach, FL 33436",
+      "cuisine": ["italian"],
+      "website": "https://mammamiaboyntonbeach.com/",
+      "menus": [
+        {"id": "dinner-p1", "label": "Dinner Menu p.1", "url": "https://mammamiaboyntonbeach.com/wp-content/uploads/2024/12/12_2024Dinner-Menu_page-0001-1024x791.jpg"},
+        {"id": "dinner-p2", "label": "Dinner Menu p.2", "url": "https://mammamiaboyntonbeach.com/wp-content/uploads/2024/12/12_2024Dinner-Menu_page-0002-1024x791.jpg"},
+        {"id": "lunch-p1",  "label": "Lunch Menu p.1",  "url": "https://mammamiaboyntonbeach.com/wp-content/uploads/2024/12/12_2024Final-PDF-Mamma-Mia-of-Woolbright-Lunch-Menu-R4853917-FA_page-0001-675x1024.jpg"},
+        {"id": "lunch-p2",  "label": "Lunch Menu p.2",  "url": "https://mammamiaboyntonbeach.com/wp-content/uploads/2024/12/12_2024Final-PDF-Mamma-Mia-of-Woolbright-Lunch-Menu-R4853917-FA_page-0002-675x1024.jpg"},
+        {"id": "sunset",    "label": "Sunset Menu (PDF)", "url": "https://mammamiaboyntonbeach.com/wp-content/uploads/2022/03/SunsetMenu.pdf"}
+      ],
+      "yelp": "https://www.yelp.com/biz/mamma-mia-boynton-boynton-beach",
+      "notes": "Итальянский ресторан на Woolbright Rd. Меню в формате изображений JPG (vision LLM). (561) 369-0670"
+    },
+    {
+      "name": "Cucina Moderna",
+      "slug": "cucina-moderna",
+      "address": "9918 Lyons Rd, Suite 250, Boynton Beach, FL 33472",
+      "cuisine": ["italian"],
+      "website": "https://www.cucinamodernafl.com/",
+      "menus": [
+        {"id": "main",   "label": "Main Menu",   "url": "https://www.cucinamodernafl.com/boynton-beach-menu/"},
+        {"id": "lunch",  "label": "Lunch Menu",  "url": "https://www.cucinamodernafl.com/menu/lunch-menu/"},
+        {"id": "sunset", "label": "Sunset Menu", "url": "https://www.cucinamodernafl.com/menu/sunset-menu/"}
+      ],
+      "yelp": null,
+      "notes": "Современная итальянская кухня. (561) 810-8574"
+    },
+    {
+      "name": "DeLuca's Italian Kitchen & Bar",
+      "slug": "delucas-italian",
+      "address": "8260 South Jog Road, Boynton Beach, FL",
+      "cuisine": ["italian"],
+      "website": "https://delucasitaliankitchen.com/",
+      "menus": [
+        {"id": "main", "label": "Menu", "url": "https://delucasitaliankitchen.com/menu"}
+      ],
+      "yelp": null,
+      "notes": "Итальянская кухня & бар. (561) 877-6945"
+    },
+    {
+      "name": "Ruocco's Restaurant",
+      "slug": "ruoccos",
+      "address": "701 N Congress Ave, Boynton Beach, FL 33426",
+      "cuisine": ["italian"],
+      "website": "https://www.ruoccoson9.com/",
+      "menus": [
+        {"id": "main", "label": "Menu", "url": "https://www.ruoccoson9.com/menus/boynton-beach-menu"}
+      ],
+      "yelp": null,
+      "notes": "Семейный итальянский ресторан, рецепты передаются через поколения"
+    },
+    {
+      "name": "Fiorella Italian Restaurant",
+      "slug": "fiorella",
+      "address": "7000 Charleston Shores Blvd, Lake Worth, FL 33467",
+      "cuisine": ["italian"],
+      "website": "https://www.fiorellarestaurant.com/",
+      "menus": [
+        {"id": "dinner", "label": "Dinner Menu", "url": "https://www.fiorellarestaurant.com/dinner-menu/"}
+      ],
+      "yelp": null,
+      "notes": "Старосветская итальянская кухня, пицца NY style и Sicilian. (561) 963-4999"
+    },
+    {
+      "name": "Porta Bella Italian Restaurant",
+      "slug": "porta-bella",
+      "address": "Boynton Beach, FL",
+      "cuisine": ["italian"],
+      "website": "https://portobellaitalian.com/",
+      "menus": [
+        {"id": "main", "label": "Menu", "url": "https://portobellaitalian.com/menu/"}
+      ],
+      "yelp": null,
+      "notes": "Примечание: это тот же Porto Bella (portobellaitalian.com) — уточнить если другой ресторан"
     }
   ]
 }

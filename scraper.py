@@ -349,13 +349,18 @@ def _image_phash(image_path: str) -> str | None:
 def extract_image_menu(image_path: str) -> dict[str, list[dict]]:
     """
     Call a vision LLM to extract structured menu from image.
-    Uses claude or openai depending on available env vars.
+    Priority: Gemini Flash 1.5 → Claude Haiku → OpenAI GPT-4o-mini.
     Returns parsed sections dict.
     """
     import base64
+    import mimetypes
 
     with open(image_path, "rb") as f:
-        image_b64 = base64.b64encode(f.read()).decode()
+        image_bytes = f.read()
+    image_b64 = base64.b64encode(image_bytes).decode()
+
+    # Detect mime type (jpeg by default)
+    mime_type = mimetypes.guess_type(image_path)[0] or "image/jpeg"
 
     prompt = (
         "Extract all menu items from this restaurant menu image. "
@@ -372,13 +377,31 @@ def extract_image_menu(image_path: str) -> dict[str, list[dict]]:
         "modifiers as list of strings (empty list if none)."
     )
 
-    # Try Anthropic Claude first (preferred for vision)
+    google_key = os.environ.get("GOOGLE_API_KEY")
     anthropic_key = os.environ.get("ANTHROPIC_API_KEY")
     openai_key = os.environ.get("OPENAI_API_KEY")
 
     raw_json = None
 
-    if anthropic_key:
+    # ── Gemini Flash (preferred: fast, cheap, good OCR) ──────────────────────
+    if raw_json is None and google_key:
+        try:
+            from google import genai as google_genai
+            from google.genai import types as genai_types
+            gclient = google_genai.Client(api_key=google_key)
+            resp = gclient.models.generate_content(
+                model="gemini-2.0-flash",
+                contents=[
+                    genai_types.Part.from_bytes(data=image_bytes, mime_type=mime_type),
+                    prompt,
+                ],
+            )
+            raw_json = resp.text.strip()
+        except Exception as e:
+            print(f"[scraper] Gemini vision error: {e}")
+
+    # ── Claude Haiku (fallback) ───────────────────────────────────────────────
+    if raw_json is None and anthropic_key:
         try:
             import anthropic
             client = anthropic.Anthropic(api_key=anthropic_key)
@@ -389,7 +412,7 @@ def extract_image_menu(image_path: str) -> dict[str, list[dict]]:
                     "role": "user",
                     "content": [
                         {"type": "image", "source": {"type": "base64",
-                                                      "media_type": "image/jpeg",
+                                                      "media_type": mime_type,
                                                       "data": image_b64}},
                         {"type": "text", "text": prompt},
                     ],
@@ -399,6 +422,7 @@ def extract_image_menu(image_path: str) -> dict[str, list[dict]]:
         except Exception as e:
             print(f"[scraper] Claude vision error: {e}")
 
+    # ── OpenAI GPT-4o-mini (fallback) ─────────────────────────────────────────
     if raw_json is None and openai_key:
         try:
             import openai
@@ -410,7 +434,7 @@ def extract_image_menu(image_path: str) -> dict[str, list[dict]]:
                     "role": "user",
                     "content": [
                         {"type": "image_url",
-                         "image_url": {"url": f"data:image/jpeg;base64,{image_b64}"}},
+                         "image_url": {"url": f"data:{mime_type};base64,{image_b64}"}},
                         {"type": "text", "text": prompt},
                     ],
                 }],
@@ -482,14 +506,33 @@ def _fetch_playwright(url: str, timeout_ms: int = 15000) -> str | None:
             ["node", stealth_script, url],
             capture_output=True, text=True, timeout=timeout_ms // 1000 + 30, env=env,
         )
-        if result.returncode == 0 and result.stdout:
-            # Output is JSON: {"title":..., "content":..., "htmlFile":...}
-            data = json.loads(result.stdout)
-            html_file = data.get("htmlFile")
-            if html_file and os.path.exists(html_file):
-                with open(html_file) as f:
-                    return f.read()
-            return data.get("content") or data.get("text") or ""
+        stdout = (result.stdout or "").strip()
+        if not stdout:
+            # Script returned nothing (crash / empty page) — treat as failure
+            if result.stderr:
+                print(f"[scraper] Playwright stderr: {result.stderr[:200]}")
+            return None
+        # playwright-stealth.js prints debug text AND the JSON to stdout.
+        # Extract the final JSON object (starts at the last '{' line).
+        json_str: str | None = None
+        lines = stdout.splitlines()
+        for i, line in enumerate(lines):
+            if line.strip().startswith("{"):
+                json_str = "\n".join(lines[i:])
+                break
+        if json_str is None:
+            print(f"[scraper] Playwright: no JSON found in stdout (script may have crashed)")
+            return None
+        try:
+            data = json.loads(json_str)
+        except json.JSONDecodeError as e:
+            print(f"[scraper] Playwright JSON parse error: {e}")
+            return None
+        html_file = data.get("htmlFile")
+        if html_file and os.path.exists(html_file):
+            with open(html_file) as f:
+                return f.read()
+        return data.get("content") or data.get("text") or None
     except Exception as e:
         print(f"[scraper] Playwright error: {e}")
     return None
